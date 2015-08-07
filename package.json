@@ -1,7 +1,7 @@
 {
   "name": "distributions-beta-mgf",
   "version": "0.0.0",
-  "description": "beta distribution moment-generating function (MGF)",
+  "description": "Beta distribution moment-generating function (MGF)",
   "author": {
     "name": "Philipp Burckhardt",
     "email": "pburckhardt@outlook.com"

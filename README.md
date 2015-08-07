@@ -2,13 +2,13 @@ Moment-Generating Function
 ===
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependencies][dependencies-image]][dependencies-url]
 
-> [beta](https://en.wikipedia.org/wiki/beta_distribution) distribution moment-generating function (MGF).
+> [Beta](https://en.wikipedia.org/wiki/beta_distribution) distribution moment-generating function (MGF).
 
 The [moment-generating function](https://en.wikipedia.org/wiki/Moment-generating_function) for a [beta](https://en.wikipedia.org/wiki/beta_distribution) random variable is
 
 <div class="equation" align="center" data-raw-text="
-    M_X(t) := \mathbb{E}\!\left[e^{tX}\right]" data-equation="eq:mgf_function">
-	<img src="" alt="Moment-generating function (MGF) for a beta distribution.">
+	M_X(t) := \mathbb{E}\!\left[e^{tX}\right] =  1 +\sum_{k=1}^{\infty} \left( \prod_{r=0}^{k-1} \frac{\alpha+r}{\alpha+\beta+r} \right) \frac{t^k}{k!}" data-equation="eq:mgf_function">
+	<img src="https://cdn.rawgit.com/distributions-io/beta-mgf/9d309a70fb7709da4162672f24ef4fc043464744/docs/img/eqn.svg" alt="Moment-generating function (MGF) for a beta distribution.">
 	<br>
 </div>
 
@@ -41,18 +41,18 @@ var matrix = require( 'dstructs-matrix' ),
 	i;
 
 out = mgf( 1 );
-// returns
+// returns ~1.718
 
 out = mgf( -1 );
-// returns 0
+// returns ~0.632
 
 t = [ 0, 0.5, 1, 1.5, 2, 2.5 ];
 out = mgf( t );
-// returns [...]
+// returns [ 1, ~1.297, ~1.718, ~2.321, ~3.195, ~4.473 ]
 
 t = new Int8Array( t );
 out = mgf( t );
-// returns Float64Array( [...] )
+// returns Float64Array( [1,1,~1.718,~1.718,~3.195,~3.195] )
 
 t = new Float32Array( 6 );
 for ( i = 0; i < 6; i++ ) {
@@ -67,9 +67,9 @@ mat = matrix( t, [3,2], 'float32' );
 
 out = mgf( mat );
 /*
-	[
-
-	   ]
+	[  1.000 ~1.297
+	  ~1.718 ~2.321
+	  ~3.195 ~4.473 ]
 */
 ```
 
@@ -90,9 +90,9 @@ var t = [ 0, 0.5, 1, 1.5, 2, 2.5 ];
 
 var out = mgf( t, {
 	'alpha': 9,
-	'beta': 7
+	'beta': 2
 });
-// returns [...]
+// returns [ 1, ~1.508, ~2.28, ~3.458, ~5.257, ~8.014 ]
 ```
 
 For non-numeric `arrays`, provide an accessor `function` for accessing `array` values.
@@ -114,7 +114,7 @@ function getValue( d, i ) {
 var out = mgf( data, {
 	'accessor': getValue
 });
-// returns [...]
+// returns [ 1, ~1.297, ~1.718, ~2.321, ~3.195, ~4.473 ]
 ```
 
 
@@ -136,12 +136,12 @@ var out = mgf( data, {
 });
 /*
 	[
-		{'x':[0,]},
-		{'x':[1,]},
-		{'x':[2,]},
-		{'x':[3,]},
-		{'x':[4,]},
-		{'x':[5,]}
+		{'x':[0,1]},
+		{'x':[1,~1.297]},
+		{'x':[2,~1.718]},
+		{'x':[3,~2.321]},
+		{'x':[4,~3.195]},
+		{'x':[5,~4.473]}
 	]
 */
 
@@ -159,13 +159,13 @@ t = new Int8Array( [0,1,2,3,4] );
 out = mgf( t, {
 	'dtype': 'int32'
 });
-// returns Int32Array( [...] )
+// returns Int32Array( [1,1,3,6,13] )
 
 // Works for plain arrays, as well...
-out = mgf( [0,0.5,1,1.5,2], {
+out = mgf( [0,1,2,3,4], {
 	'dtype': 'uint8'
 });
-// returns Uint8Array( [...] )
+// returns Uint8Array( [1,1,3,6,13] )
 ```
 
 By default, the function returns a new data structure. To mutate the input data structure (e.g., when input values can be discarded or when optimizing memory usage), set the `copy` option to `false`.
@@ -177,12 +177,12 @@ var bool,
 	t,
 	i;
 
-t = [ 0, 0.5, 1, 1.5, 2 ];
+t = [ 0, 0.5, 1, 1.5, 2, 2.5 ];
 
 out = mgf( t, {
 	'copy': false
 });
-// returns [...]
+// returns [ 1, ~1.297, ~1.718, ~2.321, ~3.195, ~4.473 ]
 
 bool = ( t === out );
 // returns true
@@ -202,9 +202,9 @@ out = mgf( mat, {
 	'copy': false
 });
 /*
-	[
-
-	   ]
+	[  1.000 ~1.297
+	  ~1.718 ~2.321
+	  ~3.195 ~4.473 ]
 */
 
 bool = ( mat === out );
